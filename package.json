@@ -91,6 +91,7 @@
     "type-fest": "^5.8.0",
     "unstorage": "^1.17.5",
     "vee-validate": "^5.0.0-beta.1",
+    "vite-plugin-pwa": "^2.0.0",
     "vue": "latest",
     "vue-draggable-plus": "^0.6.1",
     "vue-router": "latest",

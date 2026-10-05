@@ -2,6 +2,7 @@ import vue from '@vitejs/plugin-vue'
 import seo from './constants/seo'
 import packageJSON from './package.json'
 import tailwindcss from '@tailwindcss/vite'
+import { VitePWA } from 'vite-plugin-pwa'
 import { defaultLocale, locales, localized } from './shared/utils/locale'
 
 export default defineNuxtConfig({
@@ -155,7 +156,51 @@ export default defineNuxtConfig({
   },
 
   vite: {
-    plugins: [tailwindcss()],
+    plugins: [
+      tailwindcss(),
+      VitePWA({
+        registerType: 'autoUpdate',
+        includeAssets: ['favicon.ico', 'icon-192.png', 'icon-512.png', 'apple-touch-icon.png'],
+        manifest: {
+          name: 'DnD Tracker',
+          short_name: 'DnD Tracker',
+          description: 'Track your DnD encounters effortlessly with our website. Get real-time updates, manage players & battles, and never miss a beat.',
+          start_url: '/',
+          display: 'standalone',
+          background_color: '#0a0a0a',
+          theme_color: '#1a1a2e',
+          orientation: 'portrait-primary',
+          icons: [
+            { src: '/icon-192.png', sizes: '192x192', type: 'image/png', purpose: 'any maskable' },
+            { src: '/icon-512.png', sizes: '512x512', type: 'image/png', purpose: 'any maskable' },
+          ],
+        },
+        workbox: {
+          globPatterns: ['**/*.{js,css,html,ico,png,svg,woff2}'],
+          runtimeCaching: [
+            {
+              urlPattern: /^https:\/\/fonts\.googleapis\.com\/.*/i,
+              handler: 'CacheFirst',
+              options: {
+                cacheName: 'google-fonts-cache',
+                expiration: { maxEntries: 10, maxAgeSeconds: 60 * 60 * 24 * 365 },
+              },
+            },
+            {
+              urlPattern: /^https:\/\/fonts\.gstatic\.com\/.*/i,
+              handler: 'CacheFirst',
+              options: {
+                cacheName: 'gstatic-fonts-cache',
+                expiration: { maxEntries: 10, maxAgeSeconds: 60 * 60 * 24 * 365 },
+              },
+            },
+          ],
+        },
+        devOptions: {
+          enabled: true,
+        },
+      }),
+    ],
     optimizeDeps: {
       include: [
         '@tanstack/vue-query',

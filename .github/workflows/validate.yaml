@@ -81,3 +81,22 @@ jobs:
           merge-multiple: true
       - name: Merge reports and enforce thresholds
         run: npm run test:coverage:gate
+
+  lighthouse:
+    name: Lighthouse CI
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v6
+      - name: Setup Node.js
+        uses: actions/setup-node@v6
+        with:
+          node-version-file: ".nvmrc"
+      - name: Install dependencies
+        run: npm ci
+      - name: Build
+        run: npm run build
+      - name: Run Lighthouse CI
+        run: npx @lhci/cli@0.14.x autorun --collect.staticDistDir=.output/public
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
